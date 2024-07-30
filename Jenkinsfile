@@ -1,6 +1,6 @@
 pipeline {
     agent any
-
+    tools {nodejs "node_20"}
     stages {
         stage('Test Backend') {
             steps {
