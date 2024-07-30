@@ -1,6 +1,9 @@
 pipeline {
     agent any
-    tools {nodejs "node_20"}
+    tools {
+        nodejs "node_20"
+        docker 'docker_on_demand'
+    }
     stages {
         // stage('Test Backend') {
         //     steps {
