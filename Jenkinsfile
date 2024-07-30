@@ -9,7 +9,7 @@ pipeline {
             steps {
                 dir('src/backend') {
                     sh 'npm install'
-                    sh 'npm lint'
+                    sh 'npm run lint'
                 }
             }
         }
@@ -21,19 +21,19 @@ pipeline {
                 }
             }
         }
-        stage('Build Backend Docker Image') {
-            steps {
-                dir('src/backend') {
-                    sh 'docker build -t my-backend-image .'
-                }
-            }
-        }
-        stage('Build Frontend Docker Image') {
-            steps {
-                dir('src/frontend') {
-                    sh 'docker build -t my-frontend-image .'
-                }
-            }
-        }
+        // stage('Build Backend Docker Image') {
+        //     steps {
+        //         dir('src/backend') {
+        //             sh 'docker build -t my-backend-image .'
+        //         }
+        //     }
+        // }
+        // stage('Build Frontend Docker Image') {
+        //     steps {
+        //         dir('src/frontend') {
+        //             sh 'docker build -t my-frontend-image .'
+        //         }
+        //     }
+        // }
     }
 }
