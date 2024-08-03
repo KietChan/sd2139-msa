@@ -6,7 +6,7 @@ pipeline {
     }
     parameters {
         string(name: 'BRANCH', defaultValue: 'master', description: 'Barnch to checkout from')
-        choice(name: 'MODE', choices: ['Code Check Only', 'Package Only', 'Full'], defaultValue: 'Full', description: 'Select the flow to execute')
+        choice(name: 'MODE', choices: ['Code Check Only', 'Package Only', 'Full'], description: 'Select the flow to execute')
     }
     stages {
         stage('Test Frontend') {
