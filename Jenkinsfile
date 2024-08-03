@@ -29,15 +29,31 @@ pipeline {
         stage('Commit Version Update') {
             steps {
                 script {
-                    echo "Another version: ${env.VERSION}"
-                }
-                script {
-                    sh '''
-                        echo "Another version222 2: ${env.VERSION}"
-                    '''
+                    withCredentials([string(credentialsId: 'git_pat', variable: 'GIT_PAT')]) {
+                        sh """
+                        git config user.email "jenkins@example.com"
+                        git config user.name "Jenkins"
+                        git add .
+                        git commit -m "Increment version to ${env.VERSION}"
+                        """
+                    }
                 }
             }
         }
+
+        // stage('Commit Version Update') {
+        //     steps {
+        //         script {
+        //             echo "Another version: ${env.VERSION}"
+        //         }
+        //         script {
+        //                 sh """
+        //                     #!/bin/bash
+        //                     echo ${env.VERSION}
+        //                 """ 
+        //         }
+        //     }
+        // }
         // stage('Commit Version Update') {
         //     steps {
         //         script {
