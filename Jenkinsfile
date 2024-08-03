@@ -5,17 +5,26 @@ pipeline {
         // dockerTool 'docker_on_demand' // For local testing only.
     }
     stages {
-        // stage('Test Frontend') {
-        //     steps {
-        //         dir('src/frontend') {
-        //             sh 'npm install'
-        //             sh 'npm test'
-        //         }
-        //     }
-        // }
+        stage('Test Frontend') {
+            when {
+                expression { params.MODE == 'Code Check Only' || params.MODE == 'Full' }
+            }
+            steps {
+                dir('src/frontend') {
+                    sh 'npm install'
+                    sh 'npm test'
+                }
+            }
+        }
         stage('Read Version from Source Code') {
+            when {
+                expression { params.MODE == 'Package Only' || params.MODE == 'Full' }
+            }
             steps {
                 script {
+                    sh """
+                        git checkout ${params.BRANCH}
+                    """
                     def packageJson = readJSON file: 'src/frontend/package.json'
                     def versionParts = packageJson.version.tokenize('.')
                     versionParts[2] = (versionParts[2].toInteger() + 1).toString()
@@ -27,6 +36,9 @@ pipeline {
             }
         }
         stage('Commit Version Update') {
+            when {
+                expression { params.MODE == 'Package Only' || params.MODE == 'Full' }
+            }
             steps {
                 script {
                     withCredentials([string(credentialsId: 'git_pat', variable: 'GIT_PAT')]) {
@@ -35,11 +47,16 @@ pipeline {
                         git config user.name "Jenkins"
                         git add .
                         git commit -m "Increment the Front End's version to ${env.VERSION}"
-                        git push origin master
+                        git push
                         """
                     }
                 }
             }
+        }
+
+        parameters {
+            string(name: 'BRANCH', defaultValue: 'master', description: 'Barnch to checkout from')
+            choice(name: 'MODE', choices: ['Code Check Only', 'Package Only', 'Full'], defaultValue: 'Full', description: 'Select the flow to execute')
         }
 
         // stage('Commit Version Update') {
