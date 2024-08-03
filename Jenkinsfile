@@ -4,6 +4,10 @@ pipeline {
         nodejs "node_20" // Need to config jenkins first.
         // dockerTool 'docker_on_demand' // For local testing only.
     }
+    parameters {
+        string(name: 'BRANCH', defaultValue: 'master', description: 'Barnch to checkout from')
+        choice(name: 'MODE', choices: ['Code Check Only', 'Package Only', 'Full'], defaultValue: 'Full', description: 'Select the flow to execute')
+    }
     stages {
         stage('Test Frontend') {
             when {
@@ -52,11 +56,6 @@ pipeline {
                     }
                 }
             }
-        }
-
-        parameters {
-            string(name: 'BRANCH', defaultValue: 'master', description: 'Barnch to checkout from')
-            choice(name: 'MODE', choices: ['Code Check Only', 'Package Only', 'Full'], defaultValue: 'Full', description: 'Select the flow to execute')
         }
 
         // stage('Commit Version Update') {
