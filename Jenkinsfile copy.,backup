@@ -57,8 +57,5 @@ pipeline {
                 }
             }
         }
-
-
-        // Job to deploy to the Stage server if we have any.
     }
 }
