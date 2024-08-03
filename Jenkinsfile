@@ -4,6 +4,9 @@ pipeline {
         nodejs "node_20" // Need to config jenkins first.
         // dockerTool 'docker_on_demand' // For local testing only.
     }
+    environment {
+        VERSION = ""
+    }
     stages {
         // stage('Test Backend') {
         //     steps {
