@@ -19,9 +19,9 @@ pipeline {
                     def packageJson = readJSON file: 'src/frontend/package.json'
                     def versionParts = packageJson.version.tokenize('.')
                     versionParts[2] = (versionParts[2].toInteger() + 1).toString()
-                    packageJson.version = VERSION
-                    writeJSON file: 'src/frontend/package.json', json: packageJson, pretty: 4
                     env.VERSION = versionParts.join('.')
+                    packageJson.version = env.VERSION
+                    writeJSON file: 'src/frontend/package.json', json: packageJson, pretty: 4
                     echo "New version: ${env.VERSION}"
                 }
             }
