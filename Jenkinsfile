@@ -34,7 +34,8 @@ pipeline {
                         git config user.email "jenkins@example.com"
                         git config user.name "Jenkins"
                         git add .
-                        git commit -m "Increment version to ${env.VERSION}"
+                        git commit -m "Increment the Front End's version to ${env.VERSION}"
+                        git push origin master
                         """
                     }
                 }
