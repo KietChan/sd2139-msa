@@ -40,13 +40,15 @@ pipeline {
         stage('Commit Version Update') {
             steps {
                 script {
-                    sh '''
-                    git config user.email "jenkins@example.com"
-                    git config user.name "Jenkins"
-                    git add src/frontend/package.json
-                    git commit -m "Increment version to ${VERSION}"
-                    git push origin HEAD:main
-                    '''
+                    withCredentials([sshUserPrivateKey(credentialsId: 'git_kiet', keyFileVariable: 'SSH_KEY')]) {
+                        sh '''
+                        git config user.email "jenkins@example.com"
+                        git config user.name "Jenkins"
+                        git add src/frontend/package.json
+                        git commit -m "Increment version to ${VERSION}"
+                        GIT_SSH_COMMAND="ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no" git push origin HEAD:main
+                        '''
+                    }
                 }
             }
         }
