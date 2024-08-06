@@ -8,6 +8,9 @@ pipeline {
         string(name: 'BRANCH', defaultValue: 'master', description: 'Barnch to checkout from')
         choice(name: 'MODE', choices: ['Full', 'Code Check Only', 'Package Only'], description: 'Execution Flow')
     }
+    environment {
+        CREDENTIAL = credentials('KietChan-Github-SSHKey')
+    }
     stages {
         stage('Test Frontend') {
             when {
@@ -45,15 +48,16 @@ pipeline {
             }
             steps {
                 script {
-                    withCredentials([sshUserPrivateKey(credentialsId: 'KietChan-Github-PrivateKey', keyFileVariable: 'SSH_KEY')]) {
-                        sh """
+                    // withCredentials([sshUserPrivateKey(credentialsId: 'KietChan-Github-PrivateKey', keyFileVariable: 'SSH_KEY')]) {
+                       
+                    // }
+                    sh """
                             git config user.email "jenkins@example.com"
                             git config user.name "Jenkins"
                             git add .
                             git commit -m "Increment the Front End's version to ${env.VERSION}"
-                            GIT_SSH_COMMAND="ssh -i ${SSH_KEY}" git push
-                        """
-                    }
+                            GIT_SSH_COMMAND="ssh -i $CREDENTIAL" git push
+                    """
                 }
             }
         }
