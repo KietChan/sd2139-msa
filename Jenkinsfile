@@ -45,15 +45,15 @@ pipeline {
             steps {
                 script {
                     withCredentials([sshUserPrivateKey(credentialsId: 'KietChan-Github-PrivateKey', keyFileVariable: 'SSH_KEY')]) {
-                        sh '''
+                        sh """
                             eval "$(ssh-agent -s)"
                             ssh-add $SSH_KEY
                             git config --global user.email "you@example.com"
                             git config --global user.name "Your Name"
                             git add .
-                            git commit -m "Your commit message"
-                            git push origin ${params.BRANCH}
-                        '''
+                            git commit -m "Increment the Front End's version to ${env.VERSION}"
+                            git push --no-verify
+                        """
                     }
                 }
             }
