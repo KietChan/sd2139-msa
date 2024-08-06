@@ -47,17 +47,17 @@ pipeline {
                     withCredentials([sshUserPrivateKey(credentialsId: 'KietChan-Github-PrivateKey', keyFileVariable: 'SSH_KEY')]) {
                     sh """
                     # Configure SSH
-                    eval "\$(ssh-agent -s)"
-                    ssh-add \$SSH_KEY
+                        eval "\$(ssh-agent -s)"
+                        ssh-add \$SSH_KEY
 
-                    # Set up Git configuration
-                    git config --global user.email "your-email@example.com"
-                    git config --global user.name "Your Name"
+                        # Set up Git configuration
+                        git config --global user.email "your-email@example.com"
+                        git config --global user.name "Your Name"
 
-                    # Commit and push changes
-                    git add .
-                    git commit -m "Your commit message"
-                    git push
+                        # Commit and push changes
+                        git add .
+                        git commit -m "Increment the Front End's version to ${env.VERSION}"
+                        git push
                     """
                     }
                 }
