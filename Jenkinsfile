@@ -45,7 +45,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                    docker build -t sd2139_ecr_repo_demo/msa_frontend:${env.VERSION} .
+                    docker build -t sd2139_ecr_repo_demo/msa_frontend:${env.VERSION} ./src/frontend
                     """
                 }
             }
