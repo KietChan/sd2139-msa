@@ -51,7 +51,7 @@ pipeline {
                             git config user.name "Jenkins"
                             git add .
                             git commit -m "Increment the Front End's version to ${env.VERSION}"
-                            git push
+                            GIT_SSH_COMMAND="ssh -i ${SSH_KEY}" git push
                         """
                     }
                 }
