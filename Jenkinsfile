@@ -45,7 +45,7 @@ pipeline {
             }
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'KietChan', variable: 'GIT_PAT')]) {
+                    withCredentials([string(credentialsId: 'KietChan-Github-PrivateKey', variable: 'GIT_PAT')]) {
                         sh """
                         git config user.email "jenkins@example.com"
                         git config user.name "Jenkins"
