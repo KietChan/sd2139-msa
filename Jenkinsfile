@@ -6,7 +6,7 @@ pipeline {
     }
     parameters {
         string(name: 'BRANCH', defaultValue: 'master', description: 'Barnch to checkout from')
-        choice(name: 'MODE', choices: ['Code Check Only', 'Package Only', 'Full'], description: 'Select the flow to execute')
+        choice(name: 'MODE', choices: ['Full', 'Code Check Only', 'Package Only'], description: 'Execution Flow')
     }
     stages {
         stage('Test Frontend') {
@@ -45,7 +45,7 @@ pipeline {
             }
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'git_pat', variable: 'GIT_PAT')]) {
+                    withCredentials([string(credentialsId: 'KietChan', variable: 'GIT_PAT')]) {
                         sh """
                         git config user.email "jenkins@example.com"
                         git config user.name "Jenkins"
