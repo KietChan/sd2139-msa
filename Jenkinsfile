@@ -45,20 +45,18 @@ pipeline {
             }
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'KietChan-Github-PrivateKey', variable: 'GIT_PAT')]) {
+                    withCredentials([sshUserPrivateKey(credentialsId: 'KietChan-Github-PrivateKey', keyFileVariable: 'SSH_KEY')]) {
                         sh """
-                        git config user.email "jenkins@example.com"
-                        git config user.name "Jenkins"
-                        git add .
-                        git commit -m "Increment the Front End's version to ${env.VERSION}"
-                        git push
+                            git config user.email "jenkins@example.com"
+                            git config user.name "Jenkins"
+                            git add .
+                            git commit -m "Increment the Front End's version to ${env.VERSION}"
+                            git push
                         """
                     }
                 }
             }
         }
-
-
-        // Job to deploy to the Stage server if we have any.
+        // TODO: Job to deploy to the Stage server if we have any.
     }
 }
