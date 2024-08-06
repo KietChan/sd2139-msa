@@ -45,7 +45,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([sshUserPrivateKey(credentialsId: 'KietChan-Github-PrivateKey', keyFileVariable: 'SSH_KEY')]) {
-                        sh """
+                        sh '''
                             eval '$(ssh-agent -s)'
                             ssh-add $SSH_KEY
                             git config --global user.email "you@example.com"
@@ -53,7 +53,7 @@ pipeline {
                             git add .
                             git commit -m "Increment the Front End's version to ${env.VERSION}"
                             git push --no-verify
-                        """
+                        '''
                     }
                 }
             }
