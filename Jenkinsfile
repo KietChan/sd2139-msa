@@ -38,6 +38,34 @@ pipeline {
                 }
             }
         }
+         stage('Build Docker Image') {
+            when {
+                expression { params.MODE == 'Package Only' || params.MODE == 'Full' }
+            }
+            steps {
+                script {
+                    sh """
+                    docker build -t sd2139_ecr_repo_demo/msa_frontend:${env.VERSION} .
+                    """
+                }
+            }
+        }
+        // stage('Push Docker Image') {
+        //     when {
+        //         expression { params.MODE == 'Package Only' || params.MODE == 'Full' }
+        //     }
+        //     steps {
+        //         script {
+        //             withCredentials([usernamePassword(credentialsId: 'your-dockerhub-credentials-id', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+        //                 sh """
+        //                 echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin
+        //                 docker push your-docker-repo/your-image-name:${env.VERSION}
+        //                 docker logout
+        //                 """
+        //             }
+        //         }
+        //     }
+        // }
         stage('Commit Version Update') {
             when {
                 expression { params.MODE == 'Package Only' || params.MODE == 'Full' }
