@@ -52,7 +52,7 @@ pipeline {
                             git config --global user.name "Your Name"
                             git add .
                             git commit -m "Your commit message"
-                            git push origin your-branch
+                            git push origin ${params.BRANCH}
                         '''
                     }
                 }
