@@ -2,14 +2,10 @@ pipeline {
     agent any
     tools {
         nodejs "node_20" // Need to config jenkins first.
-        // dockerTool 'docker_on_demand' // For local testing only.
     }
     parameters {
         string(name: 'BRANCH', defaultValue: 'master', description: 'Barnch to checkout from')
         choice(name: 'MODE', choices: ['Full', 'Code Check Only', 'Package Only'], description: 'Execution Flow')
-    }
-    environment {
-        CREDENTIAL = credentials('KietChan-Github-SSHKey')
     }
     stages {
         stage('Test Frontend') {
@@ -48,16 +44,17 @@ pipeline {
             }
             steps {
                 script {
-                    // withCredentials([sshUserPrivateKey(credentialsId: 'KietChan-Github-PrivateKey', keyFileVariable: 'SSH_KEY')]) {
-                       
-                    // }
-                    sh """
-                            git config user.email "jenkins@example.com"
-                            git config user.name "Jenkins"
+                    withCredentials([sshUserPrivateKey(credentialsId: 'KietChan-Github-PrivateKey', keyFileVariable: 'SSH_KEY')]) {
+                        sh '''
+                            eval "$(ssh-agent -s)"
+                            ssh-add $SSH_KEY
+                            git config --global user.email "you@example.com"
+                            git config --global user.name "Your Name"
                             git add .
-                            git commit -m "Increment the Front End's version to ${env.VERSION}"
-                            GIT_SSH_COMMAND="ssh -i $CREDENTIAL" git push
-                    """
+                            git commit -m "Your commit message"
+                            git push origin your-branch
+                        '''
+                    }
                 }
             }
         }
