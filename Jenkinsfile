@@ -46,7 +46,7 @@ pipeline {
                 script {
                     withCredentials([sshUserPrivateKey(credentialsId: 'KietChan-Github-PrivateKey', keyFileVariable: 'SSH_KEY')]) {
                         sh """
-                            eval "$(ssh-agent -s)"
+                            eval '$(ssh-agent -s)'
                             ssh-add $SSH_KEY
                             git config --global user.email "you@example.com"
                             git config --global user.name "Your Name"
