@@ -1,28 +1,22 @@
 pipeline {
     agent any
 
-//     environment {
-//         TOKEN = ''
-//     }
+    environment {
+    }
 
     stages {
         stage('Frond End Deployment') {
             steps {
-                            script {
-                                // Generate the token and store it in an environment variable
-                                def token = sh(script: "aws eks get-token --cluster-name my-eks-cluster --query 'status.token' --output text", returnStdout: true).trim()
-
-                                // Mask the token in the logs
-                                maskPasswords([passwords: [[var: 'TOKEN', password: token]]]) {
-                                    sh '''
-                                        aws eks update-kubeconfig --region ap-southeast-1 --name my-eks-cluster
-                                        kubectl config set-credentials eks-user --token=$TOKEN
-                                        kubectl config set-context --current --user=eks-user
-                                        kubectl get pods
-                                    '''
-                                }
-                            }
-                        }
+                sh 'set +x'
+                sh '''
+                    TOKEN=$(aws eks get-token --cluster-name my-eks-cluster --query "status.token" --output text)
+                    aws eks update-kubeconfig --region ap-southeast-1 --name my-eks-cluster
+                    kubectl config set-credentials eks-user --token=$TOKEN
+                    kubectl config set-context --current --user=eks-user
+                    kubectl apply -f frontend.yaml
+                    unset TOKEN
+                '''
+            }
         }
     }
 }
