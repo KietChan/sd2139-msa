@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        TOKEN = ''
+    }
+
     stages {
         stage('Frond End Deployment') {
             steps {
@@ -9,7 +13,8 @@ pipeline {
                     aws eks update-kubeconfig --region ap-southeast-1 --name my-eks-cluster
                     kubectl config set-credentials eks-user --token=$TOKEN
                     kubectl config set-context --current --user=eks-user
-                    kubectl deploy -f
+                    kubectl apply -f frontend.yaml
+                    unset TOKEN
                 '''
             }
         }
