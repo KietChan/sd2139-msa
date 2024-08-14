@@ -12,8 +12,8 @@ pipeline {
                                 // Generate the token and store it in an environment variable
                                 def token = sh(script: "aws eks get-token --cluster-name my-eks-cluster --query 'status.token' --output text", returnStdout: true).trim()
 
-                                // Use the withEnv block to mask the token
-                                withEnv(["TOKEN=${token}"]) {
+                                // Mask the token in the logs
+                                maskPasswords([passwords: [[var: 'TOKEN', password: token]]]) {
                                     sh '''
                                         aws eks update-kubeconfig --region ap-southeast-1 --name my-eks-cluster
                                         kubectl config set-credentials eks-user --token=$TOKEN
@@ -22,7 +22,7 @@ pipeline {
                                     '''
                                 }
                             }
-            }
+                        }
         }
     }
 }
