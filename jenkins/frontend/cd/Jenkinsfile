@@ -8,14 +8,23 @@ pipeline {
     stages {
         stage('Frond End Deployment') {
             steps {
-                sh '''
-                    TOKEN=$(aws eks get-token --cluster-name my-eks-cluster --query "status.token" --output text)
-                    aws eks update-kubeconfig --region ap-southeast-1 --name my-eks-cluster
-                    kubectl config set-credentials eks-user --token=$TOKEN
-                    kubectl config set-context --current --user=eks-user
-                    kubectl apply -f frontend.yaml
-                    unset TOKEN
-                '''
+                script {
+                    // Get the token and store it in an environment variable
+                    TOKEN = sh(script: 'aws eks get-token --cluster-name my-eks-cluster --query "status.token" --output text', returnStdout: true).trim()
+
+                    // Use the token without printing it to the console
+                    withEnv(["TOKEN=${TOKEN}"]) {
+                        sh '''
+                            aws eks update-kubeconfig --region ap-southeast-1 --name my-eks-cluster
+                            kubectl config set-credentials eks-user --token=$TOKEN
+                            kubectl config set-context --current --user=eks-user
+                            kubectl apply -f frontend.yaml
+                        '''
+                    }
+
+                    // Unset the TOKEN environment variable to avoid leaving it in the environment
+                    TOKEN = ''
+                }
             }
         }
     }
