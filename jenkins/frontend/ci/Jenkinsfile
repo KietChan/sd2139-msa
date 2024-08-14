@@ -47,25 +47,30 @@ pipeline {
                     sh """
                     docker build -t sd2139_ecr_repo_demo/msa_frontend:${env.VERSION} ./src/frontend
                     """
+              ==  }
+            }
+        }
+        stage('Tag and Push Docker Image to AWS ECR') {
+            when {
+                expression { params.MODE == 'Package Only' || params.MODE == 'Full' }
+            }
+            steps {
+                script {
+                    withAWS(role: 'your-iam-role', roleAccount: 'your-account-id', duration: 900, roleSessionName: 'jenkins-session') {
+                        sh """
+                        # Get the login command from ECR
+                        eval \$(aws ecr get-login --no-include-email --region your-region)
+
+                        # Tag the Docker image
+                        docker tag sd2139_ecr_repo_demo/msa_frontend:${env.VERSION} your-account-id.dkr.ecr.your-region.amazonaws.com/sd2139_ecr_repo_demo/msa_frontend:${env.VERSION}
+
+                        # Push the Docker image to ECR
+                        docker push your-account-id.dkr.ecr.your-region.amazonaws.com/sd2139_ecr_repo_demo/msa_frontend:${env.VERSION}
+                        """
+                    }
                 }
             }
         }
-        // stage('Push Docker Image') {
-        //     when {
-        //         expression { params.MODE == 'Package Only' || params.MODE == 'Full' }
-        //     }
-        //     steps {
-        //         script {
-        //             withCredentials([usernamePassword(credentialsId: 'your-dockerhub-credentials-id', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-        //                 sh """
-        //                 echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin
-        //                 docker push your-docker-repo/your-image-name:${env.VERSION}
-        //                 docker logout
-        //                 """
-        //             }
-        //         }
-        //     }
-        // }
         stage('Commit Version Update') {
             when {
                 expression { params.MODE == 'Package Only' || params.MODE == 'Full' }
