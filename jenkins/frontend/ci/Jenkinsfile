@@ -45,7 +45,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                        docker build -t sd2139_ecr_repo_demo/msa_frontend:${env.VERSION} ./src/frontend
+                        docker build -t sd2139_ecr_repo_frontend:${env.VERSION} ./src/frontend
                     """
                 }
             }
@@ -56,25 +56,11 @@ pipeline {
             }
             steps {
                 script {
-
                     sh '''
-                        aws ecr get-login --no-include-email --region your-region
-                        docker tag sd2139_ecr_repo_demo/msa_frontend:${env.VERSION} your-account-id.dkr.ecr.your-region.amazonaws.com/sd2139_ecr_repo_demo/msa_frontend:${env.VERSION}
-                        docker push your-account-id.dkr.ecr.your-region.amazonaws.com/sd2139_ecr_repo_demo/msa_frontend:${env.VERSION}
+                        aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 992382727045.dkr.ecr.ap-southeast-1.amazonaws.com
+                        docker tag sd2139_ecr_repo_frontend:${env.VERSION} 992382727045.dkr.ecr.ap-southeast-1.amazonaws.com/sd2139_ecr_repo_frontend:${env.VERSION}
+                        docker push 992382727045.dkr.ecr.ap-southeast-1.amazonaws.com/sd2139_ecr_repo_frontend:${env.VERSION}
                     '''
-
-//                     withAWS(role: 'your-iam-role', roleAccount: 'your-account-id', duration: 900, roleSessionName: 'jenkins-session') {
-//                         sh """
-//                         # Get the login command from ECR
-//                         eval \$(aws ecr get-login --no-include-email --region your-region)
-//
-//                         # Tag the Docker image
-//                         docker tag sd2139_ecr_repo_demo/msa_frontend:${env.VERSION} your-account-id.dkr.ecr.your-region.amazonaws.com/sd2139_ecr_repo_demo/msa_frontend:${env.VERSION}
-//
-//                         # Push the Docker image to ECR
-//                         docker push your-account-id.dkr.ecr.your-region.amazonaws.com/sd2139_ecr_repo_demo/msa_frontend:${env.VERSION}
-//                         """
-//                     }
                 }
             }
         }
