@@ -45,9 +45,9 @@ pipeline {
             steps {
                 script {
                     sh """
-                    docker build -t sd2139_ecr_repo_demo/msa_frontend:${env.VERSION} ./src/frontend
+                        docker build -t sd2139_ecr_repo_demo/msa_frontend:${env.VERSION} ./src/frontend
                     """
-              ==  }
+                }
             }
         }
         stage('Tag and Push Docker Image to AWS ECR') {
@@ -56,18 +56,25 @@ pipeline {
             }
             steps {
                 script {
-                    withAWS(role: 'your-iam-role', roleAccount: 'your-account-id', duration: 900, roleSessionName: 'jenkins-session') {
-                        sh """
-                        # Get the login command from ECR
-                        eval \$(aws ecr get-login --no-include-email --region your-region)
 
-                        # Tag the Docker image
+                    sh '''
+                        aws ecr get-login --no-include-email --region your-region
                         docker tag sd2139_ecr_repo_demo/msa_frontend:${env.VERSION} your-account-id.dkr.ecr.your-region.amazonaws.com/sd2139_ecr_repo_demo/msa_frontend:${env.VERSION}
-
-                        # Push the Docker image to ECR
                         docker push your-account-id.dkr.ecr.your-region.amazonaws.com/sd2139_ecr_repo_demo/msa_frontend:${env.VERSION}
-                        """
-                    }
+                    '''
+
+//                     withAWS(role: 'your-iam-role', roleAccount: 'your-account-id', duration: 900, roleSessionName: 'jenkins-session') {
+//                         sh """
+//                         # Get the login command from ECR
+//                         eval \$(aws ecr get-login --no-include-email --region your-region)
+//
+//                         # Tag the Docker image
+//                         docker tag sd2139_ecr_repo_demo/msa_frontend:${env.VERSION} your-account-id.dkr.ecr.your-region.amazonaws.com/sd2139_ecr_repo_demo/msa_frontend:${env.VERSION}
+//
+//                         # Push the Docker image to ECR
+//                         docker push your-account-id.dkr.ecr.your-region.amazonaws.com/sd2139_ecr_repo_demo/msa_frontend:${env.VERSION}
+//                         """
+//                     }
                 }
             }
         }
@@ -79,13 +86,13 @@ pipeline {
                 script {
                     withCredentials([sshUserPrivateKey(credentialsId: 'KietChan-Github-PrivateKey', keyFileVariable: 'SSH_KEY')]) {
                     sh """
-                    # Configure SSH
+                        # Configure SSH
                         eval "\$(ssh-agent -s)"
                         ssh-add \$SSH_KEY
 
                         # Set up Git configuration
-                        git config --global user.email "your-email@example.com"
-                        git config --global user.name "Your Name"
+                        git config --global user.email "jenkinsl@example.com"
+                        git config --global user.name "Jenkins Bot"
 
                         # Commit and push changes
                         git add .
