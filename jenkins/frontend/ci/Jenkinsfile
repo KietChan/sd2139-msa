@@ -83,7 +83,7 @@ pipeline {
                             git config --global user.name "Jenkins Bot"
                             git add .
                             git commit -m "Increment the Front End's version to ${env.VERSION}"
-                            GIT_SSH_COMMAND="ssh -i $SSH_KEY" git push
+                            git push
                         """
                     }
                 }
