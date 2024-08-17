@@ -70,14 +70,14 @@ pipeline {
             }
             steps {
                 script {
-                    withCredentials([sshUserPrivateKey(credentialsId: 'KietChan-Github-PrivateKey', keyFileVariable: 'SSH_KEY')]) {
+                    withCredentials([sshUserPrivateKey(credentialsId: 'KietChan-PrivateKey', keyFileVariable: 'SSH_KEY')]) {
                     sh """
                         # Configure SSH
                         eval "\$(ssh-agent -s)"
                         ssh-add \$SSH_KEY
 
                         # Set up Git configuration
-                        git config --global user.email "jenkinsl@example.com"
+                        git config --global user.email "jenkins_kiet@example.com"
                         git config --global user.name "Jenkins Bot"
 
                         # Commit and push changes
