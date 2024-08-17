@@ -26,9 +26,6 @@ pipeline {
             }
             steps {
                 script {
-                    sh """
-                        git checkout ${params.BRANCH}
-                    """
                     def packageJson = readJSON file: 'src/frontend/package.json'
                     def versionParts = packageJson.version.tokenize('.')
                     versionParts[2] = (versionParts[2].toInteger() + 1).toString()
@@ -58,8 +55,8 @@ pipeline {
             steps {
                 script {
                     sh 'aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 992382727045.dkr.ecr.ap-southeast-1.amazonaws.com'
-                    sh 'docker tag sd2139_ecr_repo_frontend:${env.VERSION} 992382727045.dkr.ecr.ap-southeast-1.amazonaws.com/sd2139_ecr_repo_frontend:${env.VERSION}'
-                    sh 'docker push 992382727045.dkr.ecr.ap-southeast-1.amazonaws.com/sd2139_ecr_repo_frontend:${env.VERSION}'
+                    sh "docker tag sd2139_ecr_repo_frontend:${env.VERSION} 992382727045.dkr.ecr.ap-southeast-1.amazonaws.com/sd2139_ecr_repo_frontend:${env.VERSION}"
+                    sh "docker push 992382727045.dkr.ecr.ap-southeast-1.amazonaws.com/sd2139_ecr_repo_frontend:${env.VERSION}"
                 }
             }
         }
