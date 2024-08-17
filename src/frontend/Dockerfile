@@ -8,6 +8,9 @@ WORKDIR /usr/src/app
 COPY package.json /usr/src/app
 COPY package-lock.json /usr/src/app
 
+
+RUN npm install
+
 # Install dependecies
 #RUN npm set progress=false \
 #    && npm config set depth 0 \
