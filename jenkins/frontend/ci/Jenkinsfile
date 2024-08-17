@@ -68,18 +68,11 @@ pipeline {
                 script {
                     withCredentials([sshUserPrivateKey(credentialsId: 'KietChan-PrivateKey', keyFileVariable: 'SSH_KEY')]) {
                     sh """
-                        # Configure SSH
-                        eval "\$(ssh-agent -s)"
-                        ssh-add \$SSH_KEY
-
-                        # Set up Git configuration
                         git config --global user.email "jenkins_kiet@example.com"
                         git config --global user.name "Jenkins Bot"
-
-                        # Commit and push changes
                         git add .
                         git commit -m "Increment the Front End's version to ${env.VERSION}"
-                        git push
+                        GIT_SSH_COMMAND="ssh -i $SSH_KEY" git push
                     """
                     }
                 }
