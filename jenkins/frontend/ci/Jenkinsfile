@@ -10,13 +10,6 @@ pipeline {
     stages {
         stage('Pull the whole branch instead of commit') {
             steps {
-//                 withCredentials([sshUserPrivateKey(credentialsId: 'KietChan-PrivateKey', keyFileVariable: 'SSH_KEY')]) {
-//                     sh """
-//                         git checkout ${params.BRANCH}
-//                         GIT_SSH_COMMAND="ssh -i $SSH_KEY" git pull -r
-//                     """
-//                 }
-
                 sshagent(['KietChan-PrivateKey']) {
                     sh """
                         git checkout ${params.BRANCH}
@@ -84,14 +77,14 @@ pipeline {
             }
             steps {
                 script {
-                    withCredentials([sshUserPrivateKey(credentialsId: 'KietChan-PrivateKey', keyFileVariable: 'SSH_KEY')]) {
-                    sh """
-                        git config --global user.email "jenkins_kiet@example.com"
-                        git config --global user.name "Jenkins Bot"
-                        git add .
-                        git commit -m "Increment the Front End's version to ${env.VERSION}"
-                        GIT_SSH_COMMAND="ssh -i $SSH_KEY" git push
-                    """
+                    sshagent(['KietChan-PrivateKey']) {
+                        sh """
+                            git config --global user.email "jenkins_kiet@example.com"
+                            git config --global user.name "Jenkins Bot"
+                            git add .
+                            git commit -m "Increment the Front End's version to ${env.VERSION}"
+                            GIT_SSH_COMMAND="ssh -i $SSH_KEY" git push
+                        """
                     }
                 }
             }
