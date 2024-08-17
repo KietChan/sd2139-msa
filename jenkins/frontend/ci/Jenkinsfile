@@ -10,11 +10,18 @@ pipeline {
     stages {
         stage('Pull the whole branch instead of commit') {
             steps {
-                dir('src/frontend') {
-                    withCredentials([sshUserPrivateKey(credentialsId: 'KietChan-PrivateKey', keyFileVariable: 'SSH_KEY')]) {
-                            sh "git checkout ${params.BRANCH}"
-                            sh "GIT_SSH_COMMAND='ssh -i $SSH_KEY' git pull -r"
-                    }
+//                 withCredentials([sshUserPrivateKey(credentialsId: 'KietChan-PrivateKey', keyFileVariable: 'SSH_KEY')]) {
+//                     sh """
+//                         git checkout ${params.BRANCH}
+//                         GIT_SSH_COMMAND="ssh -i $SSH_KEY" git pull -r
+//                     """
+//                 }
+
+                sshagent(['KietChan-PrivateKey']) {
+                    sh """
+                        git checkout ${params.BRANCH}
+                        git pull -r
+                    """
                 }
             }
         }
