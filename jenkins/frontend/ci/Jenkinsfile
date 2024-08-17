@@ -8,6 +8,14 @@ pipeline {
         choice(name: 'MODE', choices: ['Full', 'Code Check Only', 'Package Only'], description: 'Execution Flow')
     }
     stages {
+        stage('Pull the whole branch instead of commit') {
+                dir('src/frontend') {
+                    sh "git checkout ${params.BRANCH}"
+                    sh 'git pull -r'
+                }
+            }
+        }
+
         stage('Test Frontend') {
             when {
                 expression { params.MODE == 'Code Check Only' || params.MODE == 'Full' }
