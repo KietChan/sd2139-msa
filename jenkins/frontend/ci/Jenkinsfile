@@ -9,10 +9,9 @@ pipeline {
     }
     stages {
         stage('Pull the whole branch instead of commit') {
-                dir('src/frontend') {
+            dir('src/frontend') {
                     sh "git checkout ${params.BRANCH}"
                     sh 'git pull -r'
-                }
             }
         }
 
