@@ -34,7 +34,7 @@ stages:
 
     - script: |
         npm install
-        npm test --all
+        CI=true npm test
       workingDirectory: '$(Build.SourcesDirectory)/src/frontend'
       displayName: 'Install dependencies and run tests'
       
