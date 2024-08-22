@@ -15,6 +15,7 @@ variables:
   containerRegistry: 'sd2139frontend.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/src/frontend/Dockerfile'
   tag: '$(Build.BuildId)'
+  vmImageName: 'ubuntu-latest'
 
 
 stages:
@@ -26,9 +27,16 @@ stages:
     pool:
       vmImage: $(vmImageName)
     steps:
-    - task: NodeTaskRunnerInstaller@0
+    - task: UseNode@1
       inputs:
-        nodeVersion: '16'
+        version: '14.x'
+      displayName: 'Install Node.js'
+
+    - script: |
+        npm install
+        npm test
+      displayName: 'Install dependencies and run tests'
+      
     - task: Docker@2
       displayName: Build and push an image to container registry
       inputs:
