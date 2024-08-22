@@ -35,6 +35,7 @@ stages:
     - script: |
         npm install
         npm test
+      workingDirectory: '$(Build.SourcesDirectory)/src/frontend'
       displayName: 'Install dependencies and run tests'
       
     - task: Docker@2
